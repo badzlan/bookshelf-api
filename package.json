@@ -11,6 +11,7 @@
   "author": "Badzlan",
   "license": "ISC",
   "dependencies": {
-    "@hapi/hapi": "^21.3.2"
+    "@hapi/hapi": "^21.3.2",
+    "nanoid": "^3.3.4"
   }
 }
