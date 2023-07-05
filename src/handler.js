@@ -1,6 +1,15 @@
 const { nanoid } = require("nanoid");
 const books = require("./books");
 
+const indexHandler = (h) => {
+   const response = h.response({
+      status: "success",
+      message: "API on /books",
+   });
+   response.code(200);
+   return response;
+};
+
 const addBookHandler = (request, h) => {
    const { name, year, author, summary, publisher, pageCount, readPage, reading } = request.payload;
 
@@ -221,4 +230,4 @@ const deleteBookByIdHandler = (request, h) => {
    return response;
 };
 
-module.exports = { addBookHandler, getAllBooksHandler, getBookByIdHandler, editBookByIdHandler, deleteBookByIdHandler };
+module.exports = { indexHandler, addBookHandler, getAllBooksHandler, getBookByIdHandler, editBookByIdHandler, deleteBookByIdHandler };
