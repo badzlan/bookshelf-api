@@ -6,7 +6,8 @@
   "scripts": {
     "dev" : "nodemon index.js",
     "start" : "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "git": "git add . && git commit -m \"$npm_config_message\" && git push"
   },
   "author": "Badzlan",
   "license": "ISC",
