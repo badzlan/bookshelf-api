@@ -1,7 +1,7 @@
 const { nanoid } = require("nanoid");
 const books = require("./books");
 
-const indexHandler = (h) => {
+const indexHandler = (request, h) => {
    const response = h.response({
       status: "success",
       message: "API on /books",
