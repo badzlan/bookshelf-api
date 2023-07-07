@@ -1,5 +1,18 @@
 const { nanoid } = require("nanoid");
-const books = require("./books");
+const fs = require("fs");
+
+const loadBooks = () => {
+   try {
+      const booksData = fs.readFileSync("./books.json", "utf8");
+      return JSON.parse(booksData);
+   } catch (error) {
+      return [];
+   }
+};
+
+const saveBooks = (books) => {
+   fs.writeFileSync("./books.json", JSON.stringify(books, null, 2));
+};
 
 const indexHandler = (request, h) => {
    const response = h.response({
@@ -11,6 +24,8 @@ const indexHandler = (request, h) => {
 };
 
 const addBookHandler = (request, h) => {
+   const books = loadBooks();
+
    const { name, year, author, summary, publisher, pageCount, readPage, reading } = request.payload;
 
    if (name === undefined) {
@@ -53,6 +68,8 @@ const addBookHandler = (request, h) => {
 
    books.push(newBook);
 
+   saveBooks(books);
+
    const isSuccess = books.filter((book) => book.id === id).length > 0;
 
    if (isSuccess) {
@@ -69,6 +86,8 @@ const addBookHandler = (request, h) => {
 };
 
 const getAllBooksHandler = (request, h) => {
+   const books = loadBooks();
+
    const { name, reading, finished } = request.query;
 
    if (name !== undefined) {
@@ -134,8 +153,10 @@ const getAllBooksHandler = (request, h) => {
 };
 
 const getBookByIdHandler = (request, h) => {
+   const books = loadBooks();
+
    const { id } = request.params;
-   const book = books.filter((b) => b.id === id)[0];
+   const book = books.find((b) => b.id === id);
 
    if (book !== undefined) {
       return {
@@ -155,6 +176,8 @@ const getBookByIdHandler = (request, h) => {
 };
 
 const editBookByIdHandler = (request, h) => {
+   const books = loadBooks();
+
    const { id } = request.params;
    const { name, year, author, summary, publisher, pageCount, readPage, reading } = request.payload;
 
@@ -177,11 +200,11 @@ const editBookByIdHandler = (request, h) => {
    }
 
    const updatedAt = new Date().toISOString();
-   const index = books.findIndex((book) => book.id === id);
+   const bookIndex = books.findIndex((book) => book.id === id);
 
-   if (index !== -1) {
-      books[index] = {
-         ...books[index],
+   if (bookIndex !== -1) {
+      books[bookIndex] = {
+         ...books[bookIndex],
          name,
          year,
          author,
@@ -192,6 +215,7 @@ const editBookByIdHandler = (request, h) => {
          reading,
          updatedAt,
       };
+      saveBooks(books);
       const response = h.response({
          status: "success",
          message: "Buku berhasil diperbarui",
@@ -209,11 +233,14 @@ const editBookByIdHandler = (request, h) => {
 };
 
 const deleteBookByIdHandler = (request, h) => {
-   const { id } = request.params;
-   const index = books.findIndex((book) => book.id === id);
+   const books = loadBooks();
 
-   if (index !== -1) {
-      books.splice(index, 1);
+   const { id } = request.params;
+   const bookIndex = books.findIndex((book) => book.id === id);
+
+   if (bookIndex !== -1) {
+      books.splice(bookIndex, 1);
+      saveBooks(books);
       const response = h.response({
          status: "success",
          message: "Buku berhasil dihapus",
@@ -230,4 +257,11 @@ const deleteBookByIdHandler = (request, h) => {
    return response;
 };
 
-module.exports = { indexHandler, addBookHandler, getAllBooksHandler, getBookByIdHandler, editBookByIdHandler, deleteBookByIdHandler };
+module.exports = {
+   indexHandler,
+   addBookHandler,
+   getAllBooksHandler,
+   getBookByIdHandler,
+   editBookByIdHandler,
+   deleteBookByIdHandler,
+};
