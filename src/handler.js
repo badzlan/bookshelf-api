@@ -3,7 +3,7 @@ const fs = require("fs");
 
 const loadBooks = () => {
    try {
-      const booksData = fs.readFileSync("./books.json", "utf8");
+      const booksData = fs.readFileSync("./src/books.json", "utf8");
       return JSON.parse(booksData);
    } catch (error) {
       return [];
@@ -11,7 +11,7 @@ const loadBooks = () => {
 };
 
 const saveBooks = (books) => {
-   fs.writeFileSync("./books.json", JSON.stringify(books, null, 2));
+   fs.writeFileSync("./src/books.json", JSON.stringify(books, null, 2));
 };
 
 const indexHandler = (request, h) => {
